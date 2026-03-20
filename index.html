@@ -6,6 +6,9 @@
   <title>Exhibitor Carousel</title>
   <link rel="stylesheet" href="style.css">
 </head>
+<script>
+  
+</script>
 <body>
   <section class="exhibitors">
     <div class="container">
@@ -100,59 +103,178 @@
         Explore the organizations participating in the Belize GeoEducation Expo.
       </p>
 
-      <div class="cta-row">
-        <a href="#" class="btn">View All Exhibitors</a>
-      </div>
+     <div class="cta-row">
+  <button class="btn" id="openExhibitorsModal" type="button">Explore Exhibitors</button>
+</div>
     </div>
   </section>
+  
+  <div class="expo-modal" id="exhibitorsModal" aria-hidden="true">
+  <div class="expo-modal-backdrop" id="modalBackdrop"></div>
+
+  <div class="expo-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="exhibitorsModalTitle">
+    <button class="expo-modal-close" id="closeExhibitorsModal" type="button" aria-label="Close modal">
+      &times;
+    </button>
+
+    <div class="expo-modal-header">
+      <h2 id="exhibitorsModalTitle">All Exhibitors</h2>
+      <p>Browse all participating organizations in the Belize GeoEducation Expo.</p>
+    </div>
+
+    <div class="expo-modal-grid">
+      <article class="expo-modal-card">
+        <div class="expo-modal-card-top">
+          <img src="img/bel.png" alt="Belize Electricity Limited">
+        </div>
+        <div class="expo-modal-card-body">
+          <h3>Belize Electricity Limited</h3>
+          <a href="https://www.bel.com.bz/" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+            Visit Website
+          </a>
+        </div>
+      </article>
+
+      <article class="expo-modal-card">
+        <div class="expo-modal-card-top">
+          <img src="img/belizecitycouncil.png" alt="Belize City Council">
+        </div>
+        <div class="expo-modal-card-body">
+          <h3>Belize City Council</h3>
+          <a href="https://belizecitycouncil.org/" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+            Visit Website
+          </a>
+        </div>
+      </article>
+
+      <article class="expo-modal-card">
+        <div class="expo-modal-card-top">
+          <img src="img/bws.png" alt="Belize Water Services">
+        </div>
+        <div class="expo-modal-card-body">
+          <h3>Belize Water Services</h3>
+          <a href="https://www.bws.bz/" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+            Visit Website
+          </a>
+        </div>
+      </article>
+
+      <article class="expo-modal-card">
+        <div class="expo-modal-card-top">
+          <img src="img/itz'at.png" alt="Itz'at STEAM Academy">
+        </div>
+        <div class="expo-modal-card-body">
+          <h3>Itz'at STEAM Academy</h3>
+          <a href="#" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+            Visit Website
+          </a>
+        </div>
+      </article>
+
+      <article class="expo-modal-card">
+        <div class="expo-modal-card-top">
+          <img src="img/ministryagric.png" alt="Ministry of Agriculture">
+        </div>
+        <div class="expo-modal-card-body">
+          <h3>Ministry of Agriculture</h3>
+          <a href="#" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+            Visit Website
+          </a>
+        </div>
+      </article>
+
+      <article class="expo-modal-card">
+        <div class="expo-modal-card-top">
+          <img src="https://via.placeholder.com/150x80?text=ENV" alt="Environmental Research Unit">
+        </div>
+        <div class="expo-modal-card-body">
+          <h3>Environmental Research Unit</h3>
+          <a href="#" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+            Visit Website
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
 
   <script>
-    const carousel = document.getElementById("carousel");
-    const scene = document.getElementById("carouselScene");
-    const focusCard = document.getElementById("focusCard");
-    const cards = [...carousel.querySelectorAll(".carousel-card")];
+  const carousel = document.getElementById("carousel");
+  const scene = document.getElementById("carouselScene");
+  const focusCard = document.getElementById("focusCard");
+  const cards = [...carousel.querySelectorAll(".carousel-card")];
 
-    function getRingSize() {
-      return getComputedStyle(document.documentElement)
-        .getPropertyValue("--ring-size")
-        .trim();
-    }
+  const exhibitorsModal = document.getElementById("exhibitorsModal");
+  const openExhibitorsModal = document.getElementById("openExhibitorsModal");
+  const closeExhibitorsModal = document.getElementById("closeExhibitorsModal");
+  const modalBackdrop = document.getElementById("modalBackdrop");
 
-    function setBaseTransforms() {
-      const ringSize = getRingSize();
+  function getRingSize() {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue("--ring-size")
+      .trim();
+  }
 
-      cards.forEach((card) => {
-        const angle = Number(card.dataset.angle);
-        card.style.transform = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${ringSize})`;
-      });
-    }
-
-    function showFocus(card) {
-      cards.forEach((c) => c.classList.remove("is-source"));
-      card.classList.add("is-source");
-
-      focusCard.innerHTML = card.innerHTML;
-      carousel.classList.add("is-paused", "dimmed");
-      focusCard.classList.add("is-visible");
-      focusCard.setAttribute("aria-hidden", "false");
-    }
-
-    function clearFocus() {
-      cards.forEach((c) => c.classList.remove("is-source"));
-      carousel.classList.remove("is-paused", "dimmed");
-      focusCard.classList.remove("is-visible");
-      focusCard.setAttribute("aria-hidden", "true");
-    }
-
-    setBaseTransforms();
-    window.addEventListener("resize", setBaseTransforms);
+  function setBaseTransforms() {
+    const ringSize = getRingSize();
 
     cards.forEach((card) => {
-      card.addEventListener("mouseenter", () => showFocus(card));
-      card.addEventListener("focusin", () => showFocus(card));
+      const angle = Number(card.dataset.angle);
+      card.style.transform = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${ringSize})`;
     });
+  }
 
-    scene.addEventListener("mouseleave", clearFocus);
-  </script>
+  function showFocus(card) {
+    cards.forEach((c) => c.classList.remove("is-source"));
+    card.classList.add("is-source");
+
+    focusCard.innerHTML = card.innerHTML;
+    carousel.classList.add("is-paused", "dimmed");
+    focusCard.classList.add("is-visible");
+    focusCard.setAttribute("aria-hidden", "false");
+  }
+
+  function clearFocus() {
+    cards.forEach((c) => c.classList.remove("is-source"));
+    carousel.classList.remove("is-paused", "dimmed");
+    focusCard.classList.remove("is-visible");
+    focusCard.setAttribute("aria-hidden", "true");
+  }
+
+  function openModal() {
+    exhibitorsModal.classList.add("is-open");
+    exhibitorsModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeModal() {
+    exhibitorsModal.classList.remove("is-open");
+    exhibitorsModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
+
+  setBaseTransforms();
+  window.addEventListener("resize", setBaseTransforms);
+
+  cards.forEach((card) => {
+    card.addEventListener("mouseenter", () => showFocus(card));
+    card.addEventListener("focusin", () => showFocus(card));
+  });
+
+  scene.addEventListener("mouseleave", clearFocus);
+
+  openExhibitorsModal.addEventListener("click", openModal);
+  closeExhibitorsModal.addEventListener("click", closeModal);
+  modalBackdrop.addEventListener("click", closeModal);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && exhibitorsModal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+</script>
+
+  
 </body>
 </html>
