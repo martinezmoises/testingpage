@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exhibitor Carousel</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f3f7f8;
+      --text: #183540;
+      --muted: #647b88;
+      --teal-dark: #0b7f86;
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --ring-size: 280px;
+      --card-width: 250px;
+      --card-height: 320px;
+      --duration: 20s;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .exhibitors {
+      padding: 80px 20px 100px;
+      background: linear-gradient(to bottom, #f5f8f9, #edf4f5);
+      overflow: hidden;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1220px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 36px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .section-header h2 {
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      line-height: 1.05;
+      margin-bottom: 14px;
+      color: #173742;
+    }
+
+    .section-header p {
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+
+    .carousel-stage {
+      position: relative;
+      height: 560px;
+      display: grid;
+      place-items: center;
+      margin: 10px 0 18px;
+      isolation: isolate;
+    }
+
+    .carousel-scene {
+      width: min(960px, 100%);
+      height: 100%;
+      position: relative;
+      perspective: 1400px;
+      display: grid;
+      place-items: center;
+    }
+
+    @keyframes spinCarousel {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(-360deg); }
+    }
+
+    .card-3d {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      animation: spinCarousel var(--duration) linear infinite;
+      will-change: transform;
+    }
+
+    .card-3d.is-paused {
+      animation-play-state: paused;
+    }
+
+    .carousel-card,
+    .focus-card {
+      width: var(--card-width);
+      height: var(--card-height);
+      border-radius: 28px;
+      overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.82);
+      box-shadow:
+        0 22px 50px rgba(20, 42, 49, 0.10),
+        0 10px 24px rgba(20, 42, 49, 0.06);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .carousel-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      will-change: transform, opacity, filter;
+      transition:
+        opacity 0.3s ease,
+        filter 0.3s ease;
+    }
+
+    .card-3d.dimmed .carousel-card {
+      opacity: 0.16;
+      filter: saturate(0.85);
+    }
+
+    .card-3d.dimmed .carousel-card.is-source {
+      opacity: 0.28;
+    }
+
+    .card-top {
+      height: 142px;
+      background: linear-gradient(180deg, #f6fbfb 0%, #eaf2f3 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card-top img {
+      max-width: 100%;
+      max-height: 84px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-body {
+      padding: 18px 18px 24px;
+      text-align: center;
+      background: white;
+      min-height: calc(var(--card-height) - 142px);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--teal-dark);
+      background: rgba(14, 165, 164, 0.12);
+      margin-bottom: 14px;
+    }
+
+    .card-body h3 {
+      font-size: 1.15rem;
+      line-height: 1.22;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .card-body p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .focus-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.92);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.28s ease,
+        transform 0.35s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.35s ease;
+      box-shadow:
+        0 32px 90px rgba(12, 127, 134, 0.18),
+        0 18px 36px rgba(20, 42, 49, 0.12);
+    }
+
+    .focus-card.is-visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.12);
+    }
+
+    .below-copy {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 28px;
+      color: var(--muted);
+      font-size: 1rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    .cta-row {
+      text-align: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 16px 28px;
+      border-radius: 999px;
+      background: var(--teal-dark);
+      color: white;
+      font-weight: 700;
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: #096d73;
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --ring-size: 215px;
+        --card-width: 205px;
+        --card-height: 275px;
+      }
+
+      .carousel-stage {
+        height: 470px;
+      }
+
+      .card-top {
+        height: 116px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --ring-size: 170px;
+        --card-width: 175px;
+        --card-height: 240px;
+      }
+
+      .carousel-stage {
+        height: 400px;
+      }
+
+      .section-header h2 {
+        font-size: 2.4rem;
+      }
+
+      .card-top {
+        height: 102px;
+      }
+
+      .card-body h3 {
+        font-size: 1rem;
+      }
+
+      .card-body p {
+        font-size: 0.86rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="exhibitors">
+    <div class="container">
+      <div class="section-header">
+        <h2>Meet Our Exhibitors</h2>
+        <p>Hover any card to pause the rotation, center it, and zoom it in.</p>
+      </div>
+
+      <div class="carousel-stage">
+        <div class="carousel-scene" id="carouselScene">
+          <div class="card-3d" id="carousel">
+            <article class="carousel-card" data-angle="0">
+              <div class="card-top">
+                <img src="https://via.placeholder.com/150x80?text=GPD" alt="Geology and Petroleum Department">
+              </div>
+              <div class="card-body">
+                <span class="tag">Government</span>
+                <h3>Geology & Petroleum Dept.</h3>
+                
+              </div>
+            </article>
+
+            <article class="carousel-card" data-angle="60">
+              <div class="card-top">
+                <img src="https://via.placeholder.com/150x80?text=ITZ%27AT" alt="ITZ'AT STEAM Academy">
+              </div>
+              <div class="card-body">
+                <span class="tag">Education</span>
+                <h3>ITZ’AT STEAM Academy</h3>
+               
+              </div>
+            </article>
+
+            <article class="carousel-card" data-angle="120">
+              <div class="card-top">
+                <img src="https://via.placeholder.com/150x80?text=MNR" alt="Ministry of Natural Resources">
+              </div>
+              <div class="card-body">
+                <span class="tag">Public Sector</span>
+                <h3>Natural Resources Ministry</h3>
+            
+              </div>
+            </article>
+
+            <article class="carousel-card" data-angle="180">
+              <div class="card-top">
+                <img src="https://via.placeholder.com/150x80?text=GIS" alt="Belize GIS Lab">
+              </div>
+              <div class="card-body">
+                <span class="tag">Geospatial</span>
+                <h3>Belize GIS Lab</h3>
+                
+              </div>
+            </article>
+
+            <article class="carousel-card" data-angle="240">
+              <div class="card-top">
+                <img src="https://via.placeholder.com/150x80?text=STEM" alt="National STEM Initiative">
+              </div>
+              <div class="card-body">
+                <span class="tag">Youth & STEAM</span>
+                <h3>National STEM Initiative</h3>
+              
+              </div>
+            </article>
+
+            <article class="carousel-card" data-angle="300">
+              <div class="card-top">
+                <img src="https://via.placeholder.com/150x80?text=ENV" alt="Environmental Research Unit">
+              </div>
+              <div class="card-body">
+                <span class="tag">Research</span>
+                <h3>Environmental Research Unit</h3>
+              
+              </div>
+            </article>
+          </div>
+
+          <article class="focus-card" id="focusCard" aria-hidden="true"></article>
+        </div>
+      </div>
+
+      <p class="below-copy">
+        The selected exhibitor now appears in a separate centered card, so the hover effect stays smooth.
+      </p>
+
+      <div class="cta-row">
+        <a href="#" class="btn">View All Exhibitors</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const carousel = document.getElementById("carousel");
+    const scene = document.getElementById("carouselScene");
+    const focusCard = document.getElementById("focusCard");
+    const cards = [...carousel.querySelectorAll(".carousel-card")];
+
+    function getRingSize() {
+      return getComputedStyle(document.documentElement)
+        .getPropertyValue("--ring-size")
+        .trim();
+    }
+
+    function setBaseTransforms() {
+      const ringSize = getRingSize();
+
+      cards.forEach((card) => {
+        const angle = Number(card.dataset.angle);
+        card.style.transform = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${ringSize})`;
+      });
+    }
+
+    function showFocus(card) {
+      cards.forEach((c) => c.classList.remove("is-source"));
+      card.classList.add("is-source");
+
+      focusCard.innerHTML = card.innerHTML;
+      carousel.classList.add("is-paused", "dimmed");
+      focusCard.classList.add("is-visible");
+      focusCard.setAttribute("aria-hidden", "false");
+    }
+
+    function clearFocus() {
+      cards.forEach((c) => c.classList.remove("is-source"));
+      carousel.classList.remove("is-paused", "dimmed");
+      focusCard.classList.remove("is-visible");
+      focusCard.setAttribute("aria-hidden", "true");
+    }
+
+    setBaseTransforms();
+    window.addEventListener("resize", setBaseTransforms);
+
+    cards.forEach((card) => {
+      card.addEventListener("mouseenter", () => showFocus(card));
+    });
+
+    scene.addEventListener("mouseleave", clearFocus);
+  </script>
+</body>
+</html>
