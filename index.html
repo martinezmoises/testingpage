@@ -11,77 +11,85 @@
     <div class="container">
       <div class="section-header">
         <h2>Meet Our Exhibitors</h2>
-        <p>Hover any card to pause the rotation, center it, and zoom it in.</p>
+        <p>Hover any card to pause the rotation and spotlight that exhibitor.</p>
       </div>
 
       <div class="carousel-stage">
         <div class="carousel-scene" id="carouselScene">
           <div class="card-3d" id="carousel">
+
             <article class="carousel-card" data-angle="0">
               <div class="card-top">
-                <img src="https://via.placeholder.com/150x80?text=GPD" alt="Geology and Petroleum Department">
+                <img src="img/bel.png" alt="Belize Electricity Limited">
               </div>
               <div class="card-body">
-                <span class="tag">Government</span>
-                <h3>Geology & Petroleum Dept.</h3>
-                
+                <h3>Belize Electricity Limited</h3>
+                <a href="https://www.bel.com.bz/" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+                  Visit Website
+                </a>
               </div>
             </article>
 
             <article class="carousel-card" data-angle="60">
               <div class="card-top">
-                <img src="https://via.placeholder.com/150x80?text=ITZ%27AT" alt="ITZ'AT STEAM Academy">
+                <img src="img/belizecitycouncil.png" alt="Belize City Council">
               </div>
               <div class="card-body">
-                <span class="tag">Education</span>
-                <h3>ITZ’AT STEAM Academy</h3>
-               
+                <h3>Belize City Council</h3>
+                <a href="https://belizecitycouncil.org/" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+                  Visit Website
+                </a>
               </div>
             </article>
 
             <article class="carousel-card" data-angle="120">
               <div class="card-top">
-                <img src="https://via.placeholder.com/150x80?text=MNR" alt="Ministry of Natural Resources">
+                <img src="img/bws.png" alt="Belize Water Services">
               </div>
               <div class="card-body">
-                <span class="tag">Public Sector</span>
-                <h3>Natural Resources Ministry</h3>
-            
+                <h3>Belize Water Services</h3>
+                <a href="https://www.bws.bz/" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+                  Visit Website
+                </a>
               </div>
             </article>
 
             <article class="carousel-card" data-angle="180">
               <div class="card-top">
-                <img src="https://via.placeholder.com/150x80?text=GIS" alt="Belize GIS Lab">
+                <img src="img/itz'at.png" alt="Itz'at STEAM Academy">
               </div>
               <div class="card-body">
-                <span class="tag">Geospatial</span>
-                <h3>Belize GIS Lab</h3>
-                
+                <h3>Itz'at STEAM Academy</h3>
+                <a href="#" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+                  Visit Website
+                </a>
               </div>
             </article>
 
             <article class="carousel-card" data-angle="240">
               <div class="card-top">
-                <img src="https://via.placeholder.com/150x80?text=STEM" alt="National STEM Initiative">
+                <img src="img/ministryagric.png" alt="Ministry of Agriculture">
               </div>
               <div class="card-body">
-                <span class="tag">Youth & STEAM</span>
-                <h3>National STEM Initiative</h3>
-              
+                <h3>Ministry of Agriculture</h3>
+                <a href="#" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+                  Visit Website
+                </a>
               </div>
             </article>
 
             <article class="carousel-card" data-angle="300">
               <div class="card-top">
-                <img src="https://via.placeholder.com/150x80?text=ENV" alt="Environmental Research Unit">
+                <img src="img/moh.png"Environmental Research Unit">
               </div>
               <div class="card-body">
-                <span class="tag">Research</span>
-                <h3>Environmental Research Unit</h3>
-              
+                <h3>Ministry of Health and Wellness</h3>
+                <a href="#" class="expo-link-btn" target="_blank" rel="noopener noreferrer">
+                  Visit Website
+                </a>
               </div>
             </article>
+
           </div>
 
           <article class="focus-card" id="focusCard" aria-hidden="true"></article>
@@ -89,7 +97,7 @@
       </div>
 
       <p class="below-copy">
-        The selected exhibitor now appears in a separate centered card, so the hover effect stays smooth.
+        Explore the organizations participating in the Belize GeoEducation Expo.
       </p>
 
       <div class="cta-row">
@@ -141,6 +149,7 @@
 
     cards.forEach((card) => {
       card.addEventListener("mouseenter", () => showFocus(card));
+      card.addEventListener("focusin", () => showFocus(card));
     });
 
     scene.addEventListener("mouseleave", clearFocus);
